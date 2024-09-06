@@ -1,0 +1,8 @@
+{
+  "appName": "authentication",
+  "jaeger": {
+    "jaegerEndpoint": "http://localhost:14268/api/traces",
+    "serviceName": "authentication",
+    "serviceVersion": "1.0.0"
+  }
+}
