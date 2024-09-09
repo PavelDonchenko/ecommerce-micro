@@ -7,15 +7,31 @@ import (
 )
 
 type Config struct {
-	Production bool         `json:"production"`
-	AppName    string       `json:"appName"`
-	Jaeger     JaegerConfig `json:"jaeger"`
+	Production                  bool             `json:"production"`
+	AppName                     string           `json:"appName"`
+	KubernetesServiceNameSuffix string           `json:"kubernetesServiceNameSuffix"`
+	ListenPort                  string           `json:"listenPort"`
+	Folders                     []string         `json:"folders"`
+	Jaeger                      JaegerConfig     `json:"jaeger"`
+	Consul                      ConsulConfig     `json:"consul"`
+	GrpcServer                  GrpcServerConfig `json:"grpcServer"`
 }
 
 type JaegerConfig struct {
 	JaegerEndpoint string `json:"jaegerEndpoint"`
 	ServiceName    string `json:"serviceName"`
 	ServiceVersion string `json:"serviceVersion"`
+}
+
+type GrpcServerConfig struct {
+	Port              string `json:"port"`
+	MaxConnectionIdle int    `json:"maxConnectionIdle"`
+	MaxConnectionAge  int    `json:"maxConnectionAge"`
+	Timeout           int    `json:"timeout"`
+}
+
+type ConsulConfig struct {
+	Host string `json:"host"`
 }
 
 func MustLoadConfig(production bool, path string) *Config {

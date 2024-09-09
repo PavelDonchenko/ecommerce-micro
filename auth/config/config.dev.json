@@ -1,8 +1,16 @@
 {
   "appName": "authentication",
+  "listenPort": ":5100",
   "jaeger": {
     "jaegerEndpoint": "http://localhost:14268/api/traces",
     "serviceName": "authentication",
     "serviceVersion": "1.0.0"
+  },
+  "folders": [
+    "certs",
+    "keys"
+  ],
+  "consul": {
+    "host": "localhost:8500"
   }
 }

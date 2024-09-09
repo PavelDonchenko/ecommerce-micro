@@ -3,13 +3,17 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log/slog"
 	"os"
 	"time"
 
 	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/config"
+	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/consul"
+	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/helpers"
 	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/logger"
 	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/trace/otel/jaeger"
+	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/validator"
 )
 
 var (
@@ -36,7 +40,7 @@ func main() {
 	defer cancel()
 
 	production = flag.Bool("prod", false, "use -prod=true to run in production mode")
-	disableTrace = flag.Bool("disable-trace", false, "use disable-trace=true if you want to disable tracing completly")
+	disableTrace = flag.Bool("disable-trace", false, "use disable-trace=true if you want to disable tracing completely")
 	flag.Parse()
 
 	var log *logger.Logger
@@ -59,6 +63,14 @@ func main() {
 
 	log.Info(ctx, "Init config", slog.Bool("production mode", cfg.Production))
 
+	validator.NewValidator("en")
+	helpers.CreateFolders(cfg.Folders)
+
+	run(ctx, log, cfg)
+}
+
+func run(ctx context.Context, log *logger.Logger, cfg *config.Config) error {
+	//------------------------Init Trace------------------------------------------
 	providerTracer, err := jaeger.NewProvider(jaeger.ProviderConfig{
 		JaegerEndpoint: cfg.Jaeger.JaegerEndpoint,
 		ServiceName:    cfg.Jaeger.ServiceName,
@@ -67,8 +79,14 @@ func main() {
 		Disabled:       *disableTrace,
 	})
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("failed to init Jaeger: %v", err)
 	}
 	defer providerTracer.Close(ctx)
-	log.Info(ctx, "Connected to Jaegger")
+	log.Info(ctx, "Connected to Jaeger")
+
+	//-------------------------Init consul-----------------------------------------
+	consulClient, serviceID, err := consul.NewConsulClient(cfg)
+	if err != nil {
+		return fmt.Errorf("failed init consul: %v", err)
+	}
 }
