@@ -12,6 +12,7 @@ import (
 	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/consul"
 	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/helpers"
 	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/logger"
+	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/metric"
 	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/trace/otel/jaeger"
 	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/validator"
 )
@@ -45,18 +46,12 @@ func main() {
 
 	var log *logger.Logger
 
-	events := logger.Events{
-		Error: func(ctx context.Context, r logger.Record) {
-			log.Info(ctx, "******* SEND ALERT *******")
-		},
-	}
-
 	traceIDFn := func(ctx context.Context) string {
 		//return web.GetTraceID(ctx)
 		return "00000000-0000-0000-0000-000000000000"
 	}
 
-	log = logger.NewWithEvents(os.Stdout, logger.LevelInfo, "AUTH", traceIDFn, events)
+	log = logger.New(os.Stdout, logger.LevelInfo, "AUTH", traceIDFn)
 	// -------------------------------------------------------------------------
 
 	cfg := config.MustLoadConfig(*production, "./auth/config/")
@@ -66,7 +61,9 @@ func main() {
 	validator.NewValidator("en")
 	helpers.CreateFolders(cfg.Folders)
 
-	run(ctx, log, cfg)
+	if err := run(ctx, log, cfg); err != nil {
+		panic(err)
+	}
 }
 
 func run(ctx context.Context, log *logger.Logger, cfg *config.Config) error {
@@ -85,8 +82,25 @@ func run(ctx context.Context, log *logger.Logger, cfg *config.Config) error {
 	log.Info(ctx, "Connected to Jaeger")
 
 	//-------------------------Init consul-----------------------------------------
-	consulClient, serviceID, err := consul.NewConsulClient(cfg)
+	consulClient, _, err := consul.NewConsulClient(cfg)
 	if err != nil {
 		return fmt.Errorf("failed init consul: %v", err)
 	}
+
+	//emailsServiceNameDone := make(chan bool)
+	//go tasks.ReloadServiceName(
+	//	ctx,
+	//	cfg,
+	//	consulClient,
+	//	cfg.EmailService.ServiceName,
+	//	consul.EmailService,
+	//	emailsServiceNameDone,
+	//)
+	//<-emailsServiceNameDone
+
+	metricService, err := metric.NewMetricsService(cfg)
+	if err != nil {
+		return fmt.Errorf("failed init metrics: %v", err)
+	}
+	return nil
 }

@@ -11,12 +11,12 @@ import (
 	consul "github.com/hashicorp/consul/api"
 )
 
-type ConsulParse string
+type Parse string
 
 const (
-	CertificatesAndSecurityKeys ConsulParse = "CertificatesAndSecurityKeys"
-	SecurityRSAKeys             ConsulParse = "SecurityRSAKeys"
-	EmailService                ConsulParse = "EmailService"
+	CertificatesAndSecurityKeys Parse = "CertificatesAndSecurityKeys"
+	SecurityRSAKeys             Parse = "SecurityRSAKeys"
+	EmailService                Parse = "EmailService"
 )
 
 func NewConsulClient(cfg *config.Config) (*consul.Client, string, error) {
