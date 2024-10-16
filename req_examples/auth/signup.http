@@ -1,0 +1,16 @@
+#sign up
+POST http://{{auth_host}}/signup
+Content-Type: application/json
+
+{
+  "name": "test admin",
+  "email": "test_admin@email.com",
+  "password": "123456789",
+  "passwordConfirm": "123456789",
+  "claims": [
+    7,
+    8,
+    9
+  ]
+}
+

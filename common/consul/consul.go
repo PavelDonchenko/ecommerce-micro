@@ -7,8 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/config"
 	consul "github.com/hashicorp/consul/api"
+
+	"github.com/PavelDonchenko/ecommerce-micro/common/config"
 )
 
 type Parse string

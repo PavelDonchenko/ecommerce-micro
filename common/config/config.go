@@ -12,6 +12,7 @@ type Config struct {
 	KubernetesServiceNameSuffix string                `json:"kubernetesServiceNameSuffix"`
 	ListenPort                  string                `json:"listenPort"`
 	Folders                     []string              `json:"folders"`
+	APIVersion                  string                `json:"apiVersion"`
 	Jaeger                      JaegerConfig          `json:"jaeger"`
 	Consul                      ConsulConfig          `json:"consul"`
 	GrpcServer                  GrpcServerConfig      `json:"grpcServer"`
@@ -19,6 +20,8 @@ type Config struct {
 	SecurityKeys                SecurityKeysConfig    `json:"securityKeys"`
 	SecurityRSAKeys             SecurityRSAKeysConfig `json:"securityRSAKeys"`
 	EmailService                EmailServiceConfig    `json:"emailService"`
+	Postgres                    PostgresConfig        `json:"postgres"`
+	Company                     CompanyConfig         `json:"company"`
 	SecondsToReloadServicesName int                   `json:"secondsToReloadServicesName"`
 }
 
@@ -26,6 +29,18 @@ type JaegerConfig struct {
 	JaegerEndpoint string `json:"jaegerEndpoint"`
 	ServiceName    string `json:"serviceName"`
 	ServiceVersion string `json:"serviceVersion"`
+}
+
+type CompanyConfig struct {
+	Name              string `json:"name"`
+	Address           string `json:"address"`
+	AddressNumber     string `json:"addressNumber"`
+	AddressComplement string `json:"addressComplement"`
+	Locality          string `json:"locality"`
+	Country           string `json:"country"`
+	PostalCode        string `json:"postalCode"`
+	Phone             string `json:"phone"`
+	Email             string `json:"email"`
 }
 
 type GrpcServerConfig struct {
@@ -78,6 +93,16 @@ type SecurityRSAKeysConfig struct {
 	ServiceName                    string `json:"serviceName"`
 	APIPathRSAPublicKeys           string `json:"apiPathRSAPublicKeys"`
 	EndPointGetRSAPublicKeys       string `json:"endPointGetRSAPublicKeys"`
+}
+
+type PostgresConfig struct {
+	User         string `json:"user"`
+	Password     string `json:"password"`
+	Host         string `json:"host"`
+	Name         string `json:"name"`
+	MaxIdleConns int    `json:"maxIdleConns"`
+	MaxOpenConns int    `json:"maxOpenConns"`
+	DisableTLS   bool   `json:"disableTLS"`
 }
 
 func MustLoadConfig(production bool, path string) *Config {

@@ -7,10 +7,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/config"
-	common_consul "github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/consul"
-	trace "github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/trace/otel"
 	consul "github.com/hashicorp/consul/api"
+
+	"github.com/PavelDonchenko/ecommerce-micro/common/config"
+	common_consul "github.com/PavelDonchenko/ecommerce-micro/common/consul"
+	trace "github.com/PavelDonchenko/ecommerce-micro/common/trace/otel"
 )
 
 func ReloadServiceName(ctx context.Context,

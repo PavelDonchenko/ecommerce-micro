@@ -1,8 +1,9 @@
 package metric
 
 import (
-	"github.com/PavelDonchenko/template/MICROSERVICES/ecommerce-micro/common/config"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/PavelDonchenko/ecommerce-micro/common/config"
 )
 
 type Metrics interface {
